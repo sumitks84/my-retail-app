@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DukaanDostAI - Live Agent Simulation v3 (Gemini Enhanced)</title>
+    <title>DukaanDostAI - Live Agent Simulation v4 (Gemini Enhanced)</title>
     <style>
         :root {
-            --bg-main: #232931;
-            --bg-panel: #393e46;
-            --bg-panel-header: #4e545c;
-            --primary: #4ecca3;
-            --secondary: #eeeeee;
-            --accent: #f8b500;
-            --text-light: #eeeeee;
-            --text-dark: #b0b8c4;
-            --border-color: #4e545c;
+            --bg-main: #1A202C;
+            --bg-panel: #2D3748;
+            --bg-panel-header: #4A5568;
+            --primary: #20C997; /* Sea Green */
+            --secondary: #E2E8F0;
+            --accent: #F6AD55; /* Orange/Yellow */
+            --text-light: #E2E8F0;
+            --text-dark: #A0AEC0;
+            --border-color: #4A5568;
         }
 
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
@@ -58,7 +58,7 @@
         .logo span { color: var(--secondary); }
         .header-info { display: flex; align-items: center; gap: 20px; font-size: 0.9rem; color: var(--text-dark); }
         .live-indicator { width: 10px; height: 10px; background-color: var(--primary); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 #4ecca3a0; } 70% { box-shadow: 0 0 0 10px #4ecca300; } 100% { box-shadow: 0 0 0 0 #4ecca300; } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 #20c997a0; } 70% { box-shadow: 0 0 0 10px #20c99700; } 100% { box-shadow: 0 0 0 0 #20c99700; } }
 
         /* --- AI Agent Log (Compact) --- */
         .ai-log-feed {
@@ -66,14 +66,14 @@
         }
         .log-entry { margin-bottom: 10px; animation: fadeIn 0.5s ease; font-size: 0.85rem; }
         .log-timestamp { color: var(--text-dark); margin-right: 8px; }
-        .log-module { font-weight: 500; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; color: #232931; }
+        .log-module { font-weight: 500; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; color: #1A202C; }
         .log-content { display: inline; }
         .log-content strong { color: var(--accent); }
         .log-content em { color: var(--primary); font-style: normal; }
-        .module-SYSTEM { background-color: #34495e; color: white;} .module-TRANSACTION { background-color: #4a90e2; color: white;}
-        .module-CUSTOMER { background-color: #9b59b6; color: white;} .module-INVENTORY { background-color: #e67e22; color: white;}
-        .module-MARKETING { background-color: #d0021b; color: white;} .module-OPERATIONS { background-color: #bd10e0; color: white;}
-        .module-GEMINI { background: linear-gradient(45deg, #4285F4, #9b72cb, #d96570, #f2a60f); color: white;}
+        .module-SYSTEM { background-color: #718096; } .module-TRANSACTION { background-color: #4299E1; }
+        .module-CUSTOMER { background-color: #9F7AEA; } .module-INVENTORY { background-color: #ED8936; }
+        .module-MARKETING { background-color: #F56565; } .module-OPERATIONS { background-color: #38B2AC; }
+        .module-GEMINI { background: linear-gradient(45deg, #F6AD55, #20C997); color: #1A202C;}
 
         /* --- Product Grid --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 20px; overflow-y: auto; }
@@ -103,14 +103,14 @@
         .totals .combo-deal { color: var(--primary); }
         .totals .grand-total { font-size: 1.5rem; font-weight: 700; margin-top: 10px; border-top: 1px solid var(--text-dark); padding-top: 10px;}
         .clear-sale-btn { width: 100%; background-color: var(--primary); color: var(--bg-main); border: none; padding: 15px; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; margin-top: 15px; }
-        .clear-sale-btn:hover { background-color: #5adbb5; }
+        .clear-sale-btn:hover { background-color: #28e0b0; }
 
         /* --- AI Suggestion Panel --- */
         .suggestion-card {
             display: flex; align-items: center; gap: 15px; background-color: var(--bg-panel-header);
             padding: 12px; border-radius: 8px; margin: 0 15px 15px; cursor: pointer; transition: all 0.2s;
         }
-        .suggestion-card:hover { border-left: 3px solid var(--accent); background-color: #5a616b; }
+        .suggestion-card:hover { border-left: 3px solid var(--accent); background-color: #5A677B; }
         .suggestion-card .emoji { font-size: 2rem; }
         .suggestion-card h5 { margin: 0; font-size: 0.9rem; }
         .suggestion-card p { margin: 2px 0 0; font-size: 0.8rem; color: var(--text-dark); }
@@ -124,16 +124,26 @@
         .eod-reco ul { list-style: '💡 '; padding-left: 20px; margin: 0; }
         .eod-reco li { margin-bottom: 10px; }
         .gemini-eod-btn { width: 100%; background-color: var(--accent); color: var(--bg-main); border: none; padding: 10px; font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; margin-top: 20px; }
-        .gemini-eod-btn:hover { background-color: #ffc72b; }
-        #gemini-summary-container { margin-top: 15px; background-color: #2e343b; padding: 15px; border-radius: 8px; font-size: 0.85rem; line-height: 1.6; }
+        .gemini-eod-btn:hover { background-color: #f8c07c; }
+        #gemini-summary-container { margin-top: 15px; background-color: #222c3a; padding: 15px; border-radius: 8px; font-size: 0.85rem; line-height: 1.6; }
 
-        /* --- Modal --- */
+        /* --- Modals --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--bg-panel); padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; border-top: 4px solid var(--primary); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .modal-header h3 { margin: 0; color: var(--primary); }
         .modal-close { background: none; border: none; color: var(--text-dark); font-size: 1.5rem; cursor: pointer; }
         .modal-body { line-height: 1.7; }
+
+        /* --- Spinner Popup --- */
+        .spinner-popup { text-align: center; }
+        .spinner {
+            width: 60px; height: 60px; border: 6px solid #4A5568;
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner-popup h3 { color: var(--primary); margin: 0; }
     </style>
 </head>
 <body>
@@ -197,9 +207,15 @@
                 <h3 id="modal-title">✨ AI Generated Description</h3>
                 <button class="modal-close" id="modal-close-btn">&times;</button>
             </div>
-            <div class="modal-body" id="modal-body">
-                <p>Generating description...</p>
-            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal for Spinner -->
+    <div class="modal-overlay" id="spinner-modal">
+        <div class="modal-content spinner-popup">
+            <div class="spinner"></div>
+            <h3>Transaction Successful!</h3>
         </div>
     </div>
 
@@ -214,31 +230,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiLogFeedEl = document.getElementById('ai-log-feed');
     const suggestionPanelEl = document.getElementById('suggestion-panel');
     const eodReportEl = document.getElementById('eod-report');
-    const modalOverlay = document.getElementById('gemini-modal');
+    const geminiModalOverlay = document.getElementById('gemini-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     const modalCloseBtn = document.getElementById('modal-close-btn');
+    const spinnerModalOverlay = document.getElementById('spinner-modal');
 
     // --- EXPANDED MOCK DATA ---
     const products = [
+        // Cricket
         { id: 'p01', name: 'SG Kashmir Willow Bat', emoji: '🏏', price: 1850, stock: 12, category: 'cricket', brand: 'SG' },
         { id: 'p02', name: 'Kookaburra Kahuna Bat', emoji: '🏏', price: 4500, stock: 8, category: 'cricket', brand: 'Kookaburra' },
         { id: 'p03', name: 'Cosco Tennis Ball (3)', emoji: '🥎', price: 320, stock: 4, category: 'cricket', brand: 'Cosco' },
         { id: 'p04', name: 'SG Club Leather Ball', emoji: '⚾', price: 600, stock: 25, category: 'cricket', brand: 'SG' },
         { id: 'p05', name: 'SG Batting Grips (2)', emoji: '🧤', price: 250, stock: 50, category: 'accessory', brand: 'SG' },
+        { id: 'p20', name: 'Shrey Cricket Helmet', emoji: '⛑️', price: 3200, stock: 15, category: 'cricket', brand: 'Shrey' },
+        { id: 'p21', name: 'GM Batting Pads', emoji: '🦵', price: 2800, stock: 18, category: 'cricket', brand: 'GM' },
+        // Apparel
         { id: 'p06', name: 'Indian Team Jersey', emoji: '👕', price: 1999, stock: 35, category: 'apparel', brand: 'Nike' },
         { id: 'p07', name: 'Dry-Fit Training Shorts', emoji: '🩳', price: 1200, stock: 40, category: 'apparel', brand: 'Adidas' },
+        { id: 'p22', name: 'Puma Training Tracksuit', emoji: '🧥', price: 4500, stock: 20, category: 'apparel', brand: 'Puma' },
+        { id: 'p23', name: 'Nike Pro Compression Tee', emoji: '👕', price: 2200, stock: 30, category: 'apparel', brand: 'Nike' },
+        { id: 'p24', name: 'Adidas Sports Socks (3)', emoji: '🧦', price: 700, stock: 50, category: 'accessory', brand: 'Adidas' },
+        // Running
         { id: 'p08', name: 'Asics Gel-Kayano 29', emoji: '👟', price: 13999, stock: 8, category: 'running', brand: 'Asics' },
         { id: 'p09', name: 'Nike Pegasus 40', emoji: '👟', price: 11500, stock: 15, category: 'running', brand: 'Nike' },
+        // Badminton
         { id: 'p10', name: 'Yonex Astrox 100', emoji: '🏸', price: 15000, stock: 10, category: 'badminton', brand: 'Yonex' },
         { id: 'p11', name: 'Li-Ning Nylon Shuttles', emoji: '🏸', price: 800, stock: 30, category: 'badminton', brand: 'Li-Ning' },
+        { id: 'p25', name: 'Victor Badminton Net', emoji: '🥅', price: 1500, stock: 25, category: 'badminton', brand: 'Victor' },
+        // Football
         { id: 'p12', name: 'Nivia Storm Football', emoji: '⚽', price: 900, stock: 30, category: 'football', brand: 'Nivia' },
         { id: 'p13', name: 'Puma Future Z Boots', emoji: '👢', price: 7500, stock: 18, category: 'football', brand: 'Puma' },
+        { id: 'p26', name: 'Adidas Shin Guards', emoji: '🛡️', price: 1100, stock: 40, category: 'football', brand: 'Adidas' },
+        // Fitness
+        { id: 'p27', name: 'Boldfit Yoga Mat', emoji: '🧘', price: 1300, stock: 30, category: 'fitness', brand: 'Boldfit' },
+        { id: 'p28', name: 'Kobo Resistance Bands', emoji: '💪', price: 800, stock: 50, category: 'fitness', brand: 'Kobo' },
+        { id: 'p29', name: 'Strauss Skipping Rope', emoji: '繩', price: 500, stock: 60, category: 'fitness', brand: 'Strauss' },
+        { id: 'p30', name: 'Nivia Basketball', emoji: '🏀', price: 1250, stock: 25, category: 'team_sports', brand: 'Nivia' },
+        { id: 'p31', name: 'Spartan Volleyball', emoji: '🏐', price: 1100, stock: 28, category: 'team_sports', brand: 'Spartan' },
+        // Outdoor
+        { id: 'p32', name: 'Wildcraft Hiking Bag', emoji: '🎒', price: 3500, stock: 22, category: 'outdoor', brand: 'Wildcraft' },
+        { id: 'p33', name: 'Quechua Hiking Shoes', emoji: '�', price: 4200, stock: 18, category: 'outdoor', brand: 'Quechua' },
+        // Nutrition
+        { id: 'p34', name: 'Optimum Nutrition Whey', emoji: '🥤', price: 5500, stock: 15, category: 'nutrition', brand: 'ON' },
+        { id: 'p35', name: 'RiteBite Energy Bar', emoji: '🍫', price: 40, stock: 100, category: 'nutrition', brand: 'RiteBite' },
     ];
     const comboDeals = [
         { name: "Cricket Starter Kit", productIds: ['p01', 'p04'], discount: 200 },
         { name: "Pro Badminton Setup", productIds: ['p10', 'p11'], discount: 1500 },
-        { name: "Runner's Choice", productIds: ['p09', 'p07'], discount: 1000 }
+        { name: "Runner's Choice", productIds: ['p09', 'p07'], discount: 1000 },
+        { name: "Full Cricket Protection", productIds: ['p20', 'p21'], discount: 500 }
     ];
 
     // --- STATE MANAGEMENT ---
@@ -288,21 +330,27 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             completeSale() {
                 if (cart.length === 0) return;
-                const { finalTotal } = calculateTotals();
-                dailyStats.sales += finalTotal;
-                dailyStats.itemsSold += cart.length;
-                dailyStats.transactions++;
-                AIAgent.logEvent('TRANSACTION', `Sale complete. Total: <strong>₹${finalTotal.toFixed(2)}</strong>.`);
-                cart.forEach(item => {
-                    const product = products.find(p => p.id === item.id);
-                    if (product) product.stock--;
-                });
-                cart = [];
-                saleInProgress = false;
-                renderCart();
-                AIAgent.Marketing.updateSuggestions(null);
-                AIAgent.EODReport.update();
-                AIAgent.logEvent('SYSTEM', 'Ready for next transaction.');
+                
+                spinnerModalOverlay.style.display = 'flex';
+
+                setTimeout(() => {
+                    spinnerModalOverlay.style.display = 'none';
+                    const { finalTotal } = calculateTotals();
+                    dailyStats.sales += finalTotal;
+                    dailyStats.itemsSold += cart.length;
+                    dailyStats.transactions++;
+                    AIAgent.logEvent('TRANSACTION', `Sale complete. Total: <strong>₹${finalTotal.toFixed(2)}</strong>.`);
+                    cart.forEach(item => {
+                        const product = products.find(p => p.id === item.id);
+                        if (product) product.stock--;
+                    });
+                    cart = [];
+                    saleInProgress = false;
+                    renderCart();
+                    AIAgent.Marketing.updateSuggestions(null);
+                    AIAgent.EODReport.update();
+                    AIAgent.logEvent('SYSTEM', 'Ready for next transaction.');
+                }, 1500);
             }
         },
         Inventory: {
@@ -373,11 +421,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('gemini-eod-btn').addEventListener('click', AIAgent.Gemini.generateEODSummary);
             }
         },
-        // --- NEW GEMINI MODULE ---
         Gemini: {
             async call(prompt) {
                 AIAgent.logEvent('GEMINI', `Calling LLM with prompt: "${prompt.substring(0, 50)}..."`);
-                // SIMULATED API CALL
                 return new Promise(resolve => {
                     setTimeout(() => {
                         AIAgent.logEvent('GEMINI', `LLM response received.`);
@@ -395,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 modalTitle.textContent = `✨ AI Description for ${product.name}`;
                 modalBody.innerHTML = `<p>Generating description...</p>`;
-                modalOverlay.style.display = 'flex';
+                geminiModalOverlay.style.display = 'flex';
 
                 const prompt = `Generate a short, exciting product description for a "${product.name}" from the brand "${product.brand}", aimed at sports enthusiasts in India.`;
                 const description = await this.call(prompt);
@@ -476,10 +522,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- INITIALIZATION ---
     clearSaleBtn.addEventListener('click', AIAgent.Transaction.completeSale);
-    modalCloseBtn.addEventListener('click', () => modalOverlay.style.display = 'none');
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            modalOverlay.style.display = 'none';
+    modalCloseBtn.addEventListener('click', () => geminiModalOverlay.style.display = 'none');
+    geminiModalOverlay.addEventListener('click', (e) => {
+        if (e.target === geminiModalOverlay) {
+            geminiModalOverlay.style.display = 'none';
         }
     });
     renderProducts();
