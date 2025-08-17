@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DukaanDostAI - Live Agent Simulation</title>
+    <title>DukaanDostAI - Live Agent Simulation v3 (Gemini Enhanced)</title>
     <style>
         :root {
-            --bg-main: #1a1d21;
-            --bg-panel: #2c313a;
-            --bg-panel-header: #343a45;
-            --primary: #4a90e2;
-            --secondary: #50e3c2;
-            --accent: #f5a623;
-            --text-light: #e0e0e0;
+            --bg-main: #232931;
+            --bg-panel: #393e46;
+            --bg-panel-header: #4e545c;
+            --primary: #4ecca3;
+            --secondary: #eeeeee;
+            --accent: #f8b500;
+            --text-light: #eeeeee;
             --text-dark: #b0b8c4;
-            --border-color: #404854;
+            --border-color: #4e545c;
         }
 
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
@@ -31,399 +31,460 @@
         }
 
         /* --- Main Layout & Panels --- */
-        .pos-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
+        .pos-container { display: flex; flex-direction: column; height: 100%; }
         .pos-header {
-            background-color: var(--bg-panel);
-            padding: 0 25px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-            height: 60px;
+            background-color: var(--bg-panel); padding: 0 25px; border-bottom: 2px solid var(--primary);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; height: 60px;
         }
-        
         .pos-main {
-            display: grid;
-            grid-template-columns: 1fr 550px;
-            gap: 20px;
-            padding: 20px;
-            flex-grow: 1;
-            overflow: hidden;
+            display: grid; grid-template-columns: 450px 1fr 380px; gap: 20px;
+            padding: 20px; flex-grow: 1; overflow: hidden;
         }
-
-        .left-column, .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            overflow: hidden;
+        .left-column, .middle-column, .right-column {
+            display: flex; flex-direction: column; gap: 20px; overflow: hidden;
         }
-
         .panel {
-            background-color: var(--bg-panel);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background-color: var(--bg-panel); border-radius: 12px;
+            border: 1px solid var(--border-color); display: flex;
+            flex-direction: column; overflow: hidden;
         }
-
         .panel-header {
-            background-color: var(--bg-panel-header);
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            background-color: var(--bg-panel-header); padding: 12px 20px; border-bottom: 1px solid var(--border-color);
+            font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 10px;
         }
 
         /* --- Header --- */
         .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .logo span { color: var(--accent); }
+        .logo span { color: var(--secondary); }
         .header-info { display: flex; align-items: center; gap: 20px; font-size: 0.9rem; color: var(--text-dark); }
-        .live-indicator { width: 10px; height: 10px; background-color: #e74c3c; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
+        .live-indicator { width: 10px; height: 10px; background-color: var(--primary); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 #4ecca3a0; } 70% { box-shadow: 0 0 0 10px #4ecca300; } 100% { box-shadow: 0 0 0 0 #4ecca300; } }
 
-        /* --- AI Agent Log (Right Panel) --- */
+        /* --- AI Agent Log (Compact) --- */
         .ai-log-feed {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            font-family: 'Roboto Mono', monospace;
+            flex-grow: 1; overflow-y: auto; padding: 15px; font-family: 'Roboto Mono', monospace; max-height: 150px;
         }
-        .log-entry {
-            margin-bottom: 15px;
-            animation: fadeIn 0.5s ease;
-        }
-        .log-header {
-            display: flex;
-            align-items: center;
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-        }
-        .log-timestamp { color: var(--text-dark); margin-right: 10px; }
-        .log-module { font-weight: 500; padding: 2px 6px; border-radius: 4px; }
-        .log-content {
-            font-size: 0.9rem;
-            padding-left: 15px;
-            border-left: 2px solid var(--border-color);
-            line-height: 1.6;
-        }
-        .log-content pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .log-entry { margin-bottom: 10px; animation: fadeIn 0.5s ease; font-size: 0.85rem; }
+        .log-timestamp { color: var(--text-dark); margin-right: 8px; }
+        .log-module { font-weight: 500; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; color: #232931; }
+        .log-content { display: inline; }
         .log-content strong { color: var(--accent); }
-        .log-content em { color: var(--secondary); font-style: normal; }
-        
-        /* Module Colors */
-        .module-SYSTEM { background-color: #34495e; color: white; }
-        .module-TRANSACTION, .module-VOICE { background-color: var(--primary); color: white; }
-        .module-CUSTOMER, .module-MARKETING { background-color: #9b59b6; color: white; }
-        .module-INVENTORY, .module-FRAUD { background-color: #e67e22; color: white; }
-        .module-OPERATIONS { background-color: var(--secondary); color: #1a1d21; }
+        .log-content em { color: var(--primary); font-style: normal; }
+        .module-SYSTEM { background-color: #34495e; color: white;} .module-TRANSACTION { background-color: #4a90e2; color: white;}
+        .module-CUSTOMER { background-color: #9b59b6; color: white;} .module-INVENTORY { background-color: #e67e22; color: white;}
+        .module-MARKETING { background-color: #d0021b; color: white;} .module-OPERATIONS { background-color: #bd10e0; color: white;}
+        .module-GEMINI { background: linear-gradient(45deg, #4285F4, #9b72cb, #d96570, #f2a60f); color: white;}
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- POS Interface (Left Panels) --- */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-            padding: 20px;
-            overflow-y: auto;
-        }
+        /* --- Product Grid --- */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 20px; overflow-y: auto; }
         .product-card {
-            background-color: var(--bg-panel-header);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            text-align: center;
-            padding: 15px 10px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background-color: var(--bg-panel-header); border: 1px solid var(--border-color); border-radius: 8px;
+            text-align: center; padding: 15px 10px; cursor: pointer; transition: all 0.2s; position: relative;
         }
+        .product-card-main { cursor: pointer; }
         .product-card:hover { transform: translateY(-3px); border-color: var(--primary); }
         .product-card .emoji { font-size: 2.5rem; }
         .product-card h5 { margin: 8px 0 2px; font-size: 0.9rem; font-weight: 500; color: var(--text-light); }
         .product-card p { margin: 0; font-size: 0.8rem; color: var(--text-dark); }
+        .gemini-btn {
+            position: absolute; top: 5px; right: 5px; background: none; border: none; color: var(--text-dark);
+            cursor: pointer; font-size: 1.2rem; transition: color 0.2s;
+        }
+        .gemini-btn:hover { color: var(--accent); }
 
-        .cart-items {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px 20px;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .cart-item:last-child { border-bottom: none; }
-        .cart-item-details { flex-grow: 1; }
+        /* --- Transaction & Cart --- */
+        .cart-items { flex-grow: 1; overflow-y: auto; padding: 10px 20px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
         .cart-item-details h4 { margin: 0; font-size: 1rem; font-weight: 500; }
         .cart-item-details p { margin: 2px 0 0; font-size: 0.85rem; color: var(--text-dark); }
         .cart-item-price { font-weight: 600; font-size: 1rem; }
+        .transaction-footer { padding: 20px; border-top: 1px solid var(--border-color); }
+        .totals div { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.9rem; }
+        .totals .combo-deal { color: var(--primary); }
+        .totals .grand-total { font-size: 1.5rem; font-weight: 700; margin-top: 10px; border-top: 1px solid var(--text-dark); padding-top: 10px;}
+        .clear-sale-btn { width: 100%; background-color: var(--primary); color: var(--bg-main); border: none; padding: 15px; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; margin-top: 15px; }
+        .clear-sale-btn:hover { background-color: #5adbb5; }
 
-        .transaction-footer {
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
+        /* --- AI Suggestion Panel --- */
+        .suggestion-card {
+            display: flex; align-items: center; gap: 15px; background-color: var(--bg-panel-header);
+            padding: 12px; border-radius: 8px; margin: 0 15px 15px; cursor: pointer; transition: all 0.2s;
         }
-        .totals .grand-total { font-size: 1.5rem; font-weight: 700; display: flex; justify-content: space-between; margin-top: 10px; }
-        .clear-sale-btn {
-            width: 100%; background-color: #c0392b; color: white; border: none; padding: 15px; font-size: 1rem;
-            font-weight: 600; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; margin-top: 15px;
-        }
-        .clear-sale-btn:hover { background-color: #a93226; }
+        .suggestion-card:hover { border-left: 3px solid var(--accent); background-color: #5a616b; }
+        .suggestion-card .emoji { font-size: 2rem; }
+        .suggestion-card h5 { margin: 0; font-size: 0.9rem; }
+        .suggestion-card p { margin: 2px 0 0; font-size: 0.8rem; color: var(--text-dark); }
+
+        /* --- End of Day Report Panel --- */
+        .eod-content { padding: 20px; font-size: 0.9rem; }
+        .eod-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-item h5 { margin: 0 0 5px; color: var(--text-dark); font-weight: 500; }
+        .stat-item p { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--primary); }
+        .eod-reco h5 { margin-top: 0; color: var(--accent); }
+        .eod-reco ul { list-style: '💡 '; padding-left: 20px; margin: 0; }
+        .eod-reco li { margin-bottom: 10px; }
+        .gemini-eod-btn { width: 100%; background-color: var(--accent); color: var(--bg-main); border: none; padding: 10px; font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; margin-top: 20px; }
+        .gemini-eod-btn:hover { background-color: #ffc72b; }
+        #gemini-summary-container { margin-top: 15px; background-color: #2e343b; padding: 15px; border-radius: 8px; font-size: 0.85rem; line-height: 1.6; }
+
+        /* --- Modal --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--bg-panel); padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; border-top: 4px solid var(--primary); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { margin: 0; color: var(--primary); }
+        .modal-close { background: none; border: none; color: var(--text-dark); font-size: 1.5rem; cursor: pointer; }
+        .modal-body { line-height: 1.7; }
     </style>
 </head>
 <body>
     <div class="pos-container">
-        <!-- HEADER -->
         <header class="pos-header">
             <div class="logo">DukaanDost<span>AI</span></div>
             <div class="header-info">
                 <div id="datetime"></div>
                 <span>Store: Pro-Sports Emporium, Bodh Gaya</span>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div class="live-indicator"></div>
-                    <span>AI AGENT LIVE</span>
-                </div>
+                <div style="display: flex; align-items: center; gap: 8px;"><div class="live-indicator"></div><span>AI AGENT LIVE</span></div>
             </div>
         </header>
 
-        <!-- MAIN CONTENT -->
         <main class="pos-main">
+            <!-- Left Column -->
             <div class="left-column">
-                <!-- Transaction Panel -->
-                <div class="panel" style="flex-grow: 1.5;">
+                <div class="panel" style="height: 100%;">
                     <div class="panel-header">🛒 Transaction</div>
-                    <div class="cart-items" id="cart-items">
-                        <p style="text-align:center; color: var(--text-dark); margin-top: 20px;">Cart is empty. Click a product to start a sale.</p>
-                    </div>
+                    <div class="cart-items" id="cart-items"><p style="text-align:center; color: var(--text-dark); margin-top: 20px;">Cart is empty.</p></div>
                     <div class="transaction-footer">
-                        <div class="totals">
-                            <div class="grand-total">
-                                <span>TOTAL</span>
-                                <span id="cart-total">₹0.00</span>
-                            </div>
+                        <div class="totals" id="totals">
+                             <div class="grand-total"><span>TOTAL</span><span id="cart-total">₹0.00</span></div>
                         </div>
                         <button class="clear-sale-btn" id="clear-sale-btn">COMPLETE & CLEAR SALE</button>
                     </div>
                 </div>
-                <!-- Product Panel -->
-                <div class="panel" style="flex-grow: 1;">
+            </div>
+
+            <!-- Middle Column -->
+            <div class="middle-column">
+                <div class="panel" style="height: 100%;">
                     <div class="panel-header">📦 Products</div>
-                    <div class="product-grid" id="product-grid">
-                        <!-- Products will be dynamically inserted here -->
-                    </div>
+                    <div class="product-grid" id="product-grid"></div>
                 </div>
             </div>
 
+            <!-- Right Column -->
             <div class="right-column">
-                <!-- AI Agent Log Panel -->
-                <div class="panel" style="height: 100%;">
-                    <div class="panel-header">🤖 AI Agent Live Log</div>
-                    <div class="ai-log-feed" id="ai-log-feed">
-                        <!-- Log entries will be dynamically inserted here -->
+                <div class="panel">
+                    <div class="panel-header">💡 AI Suggestions</div>
+                    <div id="suggestion-panel">
+                        <p style="text-align:center; color: var(--text-dark); padding: 20px;">Add an item to see suggestions.</p>
                     </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">🤖 AI Agent Live Log</div>
+                    <div class="ai-log-feed" id="ai-log-feed"></div>
+                </div>
+                <div class="panel" style="flex-grow: 1;">
+                    <div class="panel-header">📊 End of Day Report</div>
+                    <div class="eod-content" id="eod-report"></div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- DOM ELEMENTS ---
-            const datetimeEl = document.getElementById('datetime');
-            const productGridEl = document.getElementById('product-grid');
-            const cartItemsEl = document.getElementById('cart-items');
-            const cartTotalEl = document.getElementById('cart-total');
-            const clearSaleBtn = document.getElementById('clear-sale-btn');
-            const aiLogFeedEl = document.getElementById('ai-log-feed');
+    <!-- Modal for Gemini Product Description -->
+    <div class="modal-overlay" id="gemini-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">✨ AI Generated Description</h3>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <p>Generating description...</p>
+            </div>
+        </div>
+    </div>
 
-            // --- MOCK DATA ---
-            const products = [
-                { id: 'p01', name: 'SG Kashmir Willow Bat', emoji: '🏏', price: 1850, stock: 12, category: 'cricket' },
-                { id: 'p02', name: 'Cosco Tennis Ball (3)', emoji: '🥎', price: 320, stock: 4, category: 'cricket' },
-                { id: 'p03', name: 'Indian Team Jersey', emoji: '👕', price: 1999, stock: 35, category: 'apparel' },
-                { id: 'p04', name: 'SG Batting Grips (2)', emoji: '🧤', price: 250, stock: 50, category: 'accessory' },
-                { id: 'p05', name: 'Asics Gel-Kayano 29', emoji: '👟', price: 13999, stock: 8, category: 'running' },
-                { id: 'p06', name: 'Garmin Fenix 7 Watch', emoji: '⌚', price: 65000, stock: 5, category: 'electronics' },
-                { id: 'p07', name: 'Yonex Badminton Racket', emoji: '🏸', price: 2500, stock: 22, category: 'badminton' },
-                { id: 'p08', name: 'Nivia Football', emoji: '⚽', price: 900, stock: 30, category: 'football' },
-            ];
-            const customers = [
-                { id: 'c01', name: 'Ankit Sharma', status: 'Gold', preference: 'running' },
-                { id: 'c02', name: 'Priya Singh', status: 'Silver', preference: 'cricket' },
-                { id: 'c03', name: 'New Customer', status: 'Bronze', preference: 'unknown' }
-            ];
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- DOM ELEMENTS ---
+    const datetimeEl = document.getElementById('datetime');
+    const productGridEl = document.getElementById('product-grid');
+    const cartItemsEl = document.getElementById('cart-items');
+    const totalsEl = document.getElementById('totals');
+    const clearSaleBtn = document.getElementById('clear-sale-btn');
+    const aiLogFeedEl = document.getElementById('ai-log-feed');
+    const suggestionPanelEl = document.getElementById('suggestion-panel');
+    const eodReportEl = document.getElementById('eod-report');
+    const modalOverlay = document.getElementById('gemini-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
 
-            // --- STATE MANAGEMENT ---
-            let cart = [];
-            let currentCustomer = customers[2]; // Default to new customer
-            let saleInProgress = false;
+    // --- EXPANDED MOCK DATA ---
+    const products = [
+        { id: 'p01', name: 'SG Kashmir Willow Bat', emoji: '🏏', price: 1850, stock: 12, category: 'cricket', brand: 'SG' },
+        { id: 'p02', name: 'Kookaburra Kahuna Bat', emoji: '🏏', price: 4500, stock: 8, category: 'cricket', brand: 'Kookaburra' },
+        { id: 'p03', name: 'Cosco Tennis Ball (3)', emoji: '🥎', price: 320, stock: 4, category: 'cricket', brand: 'Cosco' },
+        { id: 'p04', name: 'SG Club Leather Ball', emoji: '⚾', price: 600, stock: 25, category: 'cricket', brand: 'SG' },
+        { id: 'p05', name: 'SG Batting Grips (2)', emoji: '🧤', price: 250, stock: 50, category: 'accessory', brand: 'SG' },
+        { id: 'p06', name: 'Indian Team Jersey', emoji: '👕', price: 1999, stock: 35, category: 'apparel', brand: 'Nike' },
+        { id: 'p07', name: 'Dry-Fit Training Shorts', emoji: '🩳', price: 1200, stock: 40, category: 'apparel', brand: 'Adidas' },
+        { id: 'p08', name: 'Asics Gel-Kayano 29', emoji: '👟', price: 13999, stock: 8, category: 'running', brand: 'Asics' },
+        { id: 'p09', name: 'Nike Pegasus 40', emoji: '👟', price: 11500, stock: 15, category: 'running', brand: 'Nike' },
+        { id: 'p10', name: 'Yonex Astrox 100', emoji: '🏸', price: 15000, stock: 10, category: 'badminton', brand: 'Yonex' },
+        { id: 'p11', name: 'Li-Ning Nylon Shuttles', emoji: '🏸', price: 800, stock: 30, category: 'badminton', brand: 'Li-Ning' },
+        { id: 'p12', name: 'Nivia Storm Football', emoji: '⚽', price: 900, stock: 30, category: 'football', brand: 'Nivia' },
+        { id: 'p13', name: 'Puma Future Z Boots', emoji: '👢', price: 7500, stock: 18, category: 'football', brand: 'Puma' },
+    ];
+    const comboDeals = [
+        { name: "Cricket Starter Kit", productIds: ['p01', 'p04'], discount: 200 },
+        { name: "Pro Badminton Setup", productIds: ['p10', 'p11'], discount: 1500 },
+        { name: "Runner's Choice", productIds: ['p09', 'p07'], discount: 1000 }
+    ];
 
-            // --- CORE AI AGENT SIMULATION ---
-            const AIAgent = {
-                logEvent: (module, content) => {
-                    const timestamp = new Date().toLocaleTimeString('en-IN', { hour12: false });
-                    const entry = document.createElement('div');
-                    entry.className = 'log-entry';
-                    entry.innerHTML = `
-                        <div class="log-header">
-                            <span class="log-timestamp">[${timestamp}]</span>
-                            <span class="log-module module-${module}">${module}</span>
-                        </div>
-                        <div class="log-content"><pre>${content}</pre></div>
-                    `;
-                    aiLogFeedEl.appendChild(entry);
-                    aiLogFeedEl.scrollTop = aiLogFeedEl.scrollHeight; // Auto-scroll
-                },
+    // --- STATE MANAGEMENT ---
+    let cart = [];
+    let saleInProgress = false;
+    let dailyStats = { sales: 0, itemsSold: 0, transactions: 0, externalEvent: null };
 
-                // --- AI MODULES ---
-                System: {
-                    boot() {
-                        this.updateTime();
-                        setInterval(this.updateTime, 1000);
-                        AIAgent.logEvent('SYSTEM', 'AI Agent Online. Location: Bodh Gaya. Monitoring systems...');
-                        // Simulate periodic checks
-                        setInterval(AIAgent.Operations.checkForExternalEvents, 30000);
-                    },
-                    updateTime() {
-                        const now = new Date();
-                        datetimeEl.textContent = now.toLocaleString('en-IN', {
-                            dateStyle: 'full',
-                            timeStyle: 'medium'
-                        }).replace(' at', ',');
-                    }
-                },
-
-                Transaction: {
-                    startSale() {
-                        if (!saleInProgress) {
-                            saleInProgress = true;
-                            currentCustomer = customers[Math.floor(Math.random() * customers.length)];
-                            AIAgent.logEvent('TRANSACTION', `New sale initiated. Simulating customer identification...`);
-                            setTimeout(() => AIAgent.Customer.identify(currentCustomer), 1000);
-                        }
-                    },
-                    addItem(productId) {
-                        this.startSale();
-                        const product = products.find(p => p.id === productId);
-                        if (product) {
-                            cart.push(product);
-                            AIAgent.logEvent('TRANSACTION', `Item added: <em>${product.name}</em>`);
-                            renderCart();
-                            // Trigger other AI modules
-                            AIAgent.Inventory.checkStock(product);
-                            AIAgent.Marketing.analyzeBasket(product);
-                        }
-                    },
-                    completeSale() {
-                        if (cart.length === 0) return;
-                        const total = cart.reduce((sum, item) => sum + item.price, 0);
-                        AIAgent.logEvent('TRANSACTION', `Sale completed. Total: <strong>₹${total.toFixed(2)}</strong>. Updating inventory levels.`);
-                        cart.forEach(item => {
-                            const product = products.find(p => p.id === item.id);
-                            if(product) product.stock--;
-                        });
-                        cart = [];
-                        saleInProgress = false;
-                        renderCart();
-                        AIAgent.logEvent('SYSTEM', 'Ready for next transaction.');
-                    }
-                },
-
-                Customer: {
-                    identify(customer) {
-                        let analysis = `Identified Customer: <em>${customer.name}</em> (Status: <strong>${customer.status}</strong>)`;
-                        if (customer.preference !== 'unknown') {
-                            analysis += `\n  > Known preference for <em>${customer.preference}</em> products.`;
-                        }
-                        AIAgent.logEvent('CUSTOMER', analysis);
-                    }
-                },
-
-                Inventory: {
-                    checkStock(product) {
-                        if (product.stock <= 5) {
-                            let alertType = product.stock <= 2 ? 'CRITICAL' : 'LOW';
-                             AIAgent.logEvent('INVENTORY', `📦 Stock Alert: <strong>${alertType}</strong>\n  > Item: <em>${product.name}</em>\n  > Units Left: <strong>${product.stock - 1}</strong>\n  > ACTION: Flagging for automated reorder.`);
-                        }
-                    }
-                },
-                
-                Marketing: {
-                    analyzeBasket(addedProduct) {
-                        if (addedProduct.category === 'cricket' && addedProduct.name.includes('Bat')) {
-                             AIAgent.logEvent('MARKETING', `💡 Market Basket Insight:\n  > Customers buying cricket bats often buy <em>SG Batting Grips</em>.\n  > ACTION: Suggest upsell to cashier.`);
-                        }
-                         if (addedProduct.category === 'running') {
-                             AIAgent.logEvent('MARKETING', `💡 Customer Insight:\n  > This customer loves running gear. Inform them about the new <em>marathon training apparel</em>.`);
-                        }
-                    }
-                },
-
-                Operations: {
-                    checkForExternalEvents() {
-                        if (Math.random() < 0.1) { // 10% chance every 30 seconds
-                             AIAgent.logEvent('OPERATIONS', `📈 External Event Detected:\n  > Local news reports an upcoming cricket tournament.\n  > ACTION: Adjusting sales forecast & inventory thresholds for cricket-related items.`);
-                        }
-                    }
+    // --- CORE AI AGENT SIMULATION ---
+    const AIAgent = {
+        logEvent: (module, content) => {
+            const timestamp = new Date().toLocaleTimeString('en-IN', { hour12: false });
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span><span class="log-module module-${module}">${module}</span> <div class="log-content">${content}</div>`;
+            aiLogFeedEl.prepend(entry);
+        },
+        System: {
+            boot() {
+                this.updateTime();
+                setInterval(this.updateTime, 1000);
+                AIAgent.logEvent('SYSTEM', 'AI Agent Online. All modules nominal.');
+                setInterval(AIAgent.Operations.checkForExternalEvents, 45000);
+                AIAgent.EODReport.update();
+            },
+            updateTime() {
+                const now = new Date();
+                datetimeEl.textContent = now.toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'medium' }).replace(' at', ',');
+            }
+        },
+        Transaction: {
+            startSale() {
+                if (!saleInProgress) {
+                    saleInProgress = true;
+                    AIAgent.logEvent('TRANSACTION', `New sale initiated.`);
                 }
-            };
-
-            // --- UI RENDERING ---
-            function renderProducts() {
-                productGridEl.innerHTML = '';
-                products.forEach(product => {
+            },
+            addItem(productId) {
+                this.startSale();
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    cart.push(product);
+                    AIAgent.logEvent('TRANSACTION', `Added: <em>${product.name}</em>`);
+                    renderCart();
+                    AIAgent.Inventory.checkStock(product);
+                    AIAgent.Marketing.updateSuggestions(product);
+                }
+            },
+            completeSale() {
+                if (cart.length === 0) return;
+                const { finalTotal } = calculateTotals();
+                dailyStats.sales += finalTotal;
+                dailyStats.itemsSold += cart.length;
+                dailyStats.transactions++;
+                AIAgent.logEvent('TRANSACTION', `Sale complete. Total: <strong>₹${finalTotal.toFixed(2)}</strong>.`);
+                cart.forEach(item => {
+                    const product = products.find(p => p.id === item.id);
+                    if (product) product.stock--;
+                });
+                cart = [];
+                saleInProgress = false;
+                renderCart();
+                AIAgent.Marketing.updateSuggestions(null);
+                AIAgent.EODReport.update();
+                AIAgent.logEvent('SYSTEM', 'Ready for next transaction.');
+            }
+        },
+        Inventory: {
+            checkStock(product) {
+                if (product.stock <= 5) {
+                    let alertType = product.stock <= 2 ? 'CRITICAL' : 'LOW';
+                    AIAgent.logEvent('INVENTORY', `Stock Alert: <strong>${alertType}</strong> on <em>${product.name}</em> (${product.stock - 1} left).`);
+                }
+            }
+        },
+        Marketing: {
+            updateSuggestions(product) {
+                if (!product) {
+                    suggestionPanelEl.innerHTML = `<p style="text-align:center; color: var(--text-dark); padding: 20px;">Add an item to see suggestions.</p>`;
+                    return;
+                }
+                suggestionPanelEl.innerHTML = '';
+                const suggestions = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
+                if (suggestions.length === 0) {
+                     suggestionPanelEl.innerHTML = `<p style="text-align:center; color: var(--text-dark); padding: 20px;">No specific suggestions for this item.</p>`;
+                }
+                suggestions.forEach(sug => {
                     const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.dataset.id = product.id;
-                    card.innerHTML = `
-                        <div class="emoji">${product.emoji}</div>
-                        <h5>${product.name}</h5>
-                        <p>₹${product.price.toFixed(2)}</p>
-                    `;
-                    card.addEventListener('click', () => AIAgent.Transaction.addItem(product.id));
-                    productGridEl.appendChild(card);
+                    card.className = 'suggestion-card';
+                    card.onclick = () => AIAgent.Transaction.addItem(sug.id);
+                    card.innerHTML = `<div class="emoji">${sug.emoji}</div><div><h5>${sug.name}</h5><p>₹${sug.price.toFixed(2)}</p></div>`;
+                    suggestionPanelEl.appendChild(card);
                 });
             }
-
-            function renderCart() {
-                if (cart.length === 0) {
-                    cartItemsEl.innerHTML = `<p style="text-align:center; color: var(--text-dark); margin-top: 20px;">Cart is empty.</p>`;
-                    cartTotalEl.textContent = '₹0.00';
-                } else {
-                    cartItemsEl.innerHTML = '';
-                    let total = 0;
-                    cart.forEach(item => {
-                        const cartItemEl = document.createElement('div');
-                        cartItemEl.className = 'cart-item';
-                        cartItemEl.innerHTML = `
-                            <div class="cart-item-details">
-                                <h4>${item.name}</h4>
-                                <p>Price: ₹${item.price.toFixed(2)}</p>
-                            </div>
-                            <div class="cart-item-price">₹${item.price.toFixed(2)}</div>
-                        `;
-                        cartItemsEl.appendChild(cartItemEl);
-                        total += item.price;
-                    });
-                    cartTotalEl.textContent = `₹${total.toFixed(2)}`;
+        },
+        Operations: {
+            checkForExternalEvents() {
+                if (Math.random() < 0.2 && !dailyStats.externalEvent) {
+                    dailyStats.externalEvent = "Local cricket tournament announced.";
+                    AIAgent.logEvent('OPERATIONS', `External Event: <em>${dailyStats.externalEvent}</em> Adjusting forecasts.`);
+                    AIAgent.EODReport.update();
                 }
             }
+        },
+        EODReport: {
+            update() {
+                const { sales, itemsSold, transactions, externalEvent } = dailyStats;
+                const avgSale = transactions > 0 ? (sales / transactions) : 0;
+                
+                let recoHtml = '<ul>';
+                const topSeller = products.sort((a,b) => b.price - a.price)[itemsSold % products.length];
+                if (topSeller && topSeller.stock < 10) {
+                     recoHtml += `<li><strong>Inventory:</strong> <em>${topSeller.name}</em> is selling well but stock is low (${topSeller.stock} left). Consider a bulk reorder.</li>`;
+                }
+                if (externalEvent) {
+                    recoHtml += `<li><strong>Marketing:</strong> Capitalize on the <em>'${externalEvent}'</em> by creating a "Cricket Essentials" combo deal.</li>`;
+                } else {
+                    recoHtml += `<li><strong>Marketing:</strong> Average sale value is ₹${avgSale.toFixed(2)}. Promote higher-value items like <em>Pro Badminton Rackets</em> to increase it.</li>`;
+                }
+                recoHtml += '</ul>';
 
-            // --- INITIALIZATION ---
-            clearSaleBtn.addEventListener('click', AIAgent.Transaction.completeSale);
-            renderProducts();
-            AIAgent.System.boot();
+                eodReportEl.innerHTML = `
+                    <div class="eod-stats">
+                        <div class="stat-item"><h5>Total Sales</h5><p>₹${sales.toFixed(2)}</p></div>
+                        <div class="stat-item"><h5>Items Sold</h5><p>${itemsSold}</p></div>
+                        <div class="stat-item"><h5>Transactions</h5><p>${transactions}</p></div>
+                        <div class="stat-item"><h5>Avg. Sale</h5><p>₹${avgSale.toFixed(2)}</p></div>
+                    </div>
+                    <div class="eod-reco"><h5>AI Recommendations</h5>${recoHtml}</div>
+                    <button class="gemini-eod-btn" id="gemini-eod-btn">✨ Generate AI Narrative Summary</button>
+                    <div id="gemini-summary-container" style="display: none;"></div>
+                `;
+                document.getElementById('gemini-eod-btn').addEventListener('click', AIAgent.Gemini.generateEODSummary);
+            }
+        },
+        // --- NEW GEMINI MODULE ---
+        Gemini: {
+            async call(prompt) {
+                AIAgent.logEvent('GEMINI', `Calling LLM with prompt: "${prompt.substring(0, 50)}..."`);
+                // SIMULATED API CALL
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        AIAgent.logEvent('GEMINI', `LLM response received.`);
+                        if (prompt.includes("product description")) {
+                            resolve("Unleash your inner champion with this top-tier gear! Crafted for performance and durability, it's the perfect choice for passionate players in India looking to dominate the game. Feel the power, own the victory!");
+                        } else {
+                            resolve("Today was a solid day! We saw strong sales, hitting over our target. The announcement of the local cricket tournament is a golden opportunity. Let's create a 'Cricket Fever' combo deal tomorrow and place cricket gear front-and-center in the store to maximize this opportunity. Great work team!");
+                        }
+                    }, 1500);
+                });
+            },
+            async generateProductDescription(productId) {
+                const product = products.find(p => p.id === productId);
+                if (!product) return;
+
+                modalTitle.textContent = `✨ AI Description for ${product.name}`;
+                modalBody.innerHTML = `<p>Generating description...</p>`;
+                modalOverlay.style.display = 'flex';
+
+                const prompt = `Generate a short, exciting product description for a "${product.name}" from the brand "${product.brand}", aimed at sports enthusiasts in India.`;
+                const description = await this.call(prompt);
+                modalBody.innerHTML = `<p>${description}</p>`;
+            },
+            async generateEODSummary() {
+                const summaryContainer = document.getElementById('gemini-summary-container');
+                summaryContainer.style.display = 'block';
+                summaryContainer.innerHTML = 'Generating summary...';
+                
+                const prompt = `As a retail analyst, write a brief, encouraging narrative summary of the day's sales for a store manager. Use this data: Total Sales: ${dailyStats.sales.toFixed(2)}, Items Sold: ${dailyStats.itemsSold}, Transactions: ${dailyStats.transactions}, External Factor: ${dailyStats.externalEvent || 'None'}. Provide one key actionable insight.`;
+                const summary = await this.call(prompt);
+                summaryContainer.innerHTML = summary;
+            }
+        }
+    };
+
+    // --- UI & LOGIC ---
+    function calculateTotals() {
+        let subtotal = 0;
+        let discount = 0;
+        let appliedDeals = [];
+        cart.forEach(item => subtotal += item.price);
+        
+        const cartProductIds = new Set(cart.map(p => p.id));
+        comboDeals.forEach(deal => {
+            const hasAllItems = deal.productIds.every(id => cartProductIds.has(id));
+            if (hasAllItems) {
+                discount += deal.discount;
+                appliedDeals.push({name: deal.name, amount: deal.discount});
+            }
         });
-    </script>
+
+        const finalTotal = subtotal - discount;
+        return { subtotal, discount, finalTotal, appliedDeals };
+    }
+
+    function renderCart() {
+        if (cart.length === 0) {
+            cartItemsEl.innerHTML = `<p style="text-align:center; color: var(--text-dark); margin-top: 20px;">Cart is empty.</p>`;
+        } else {
+            cartItemsEl.innerHTML = '';
+            cart.forEach(item => {
+                const cartItemEl = document.createElement('div');
+                cartItemEl.className = 'cart-item';
+                cartItemEl.innerHTML = `<div class="cart-item-details"><h4>${item.name}</h4><p>${item.brand}</p></div><div class="cart-item-price">₹${item.price.toFixed(2)}</div>`;
+                cartItemsEl.appendChild(cartItemEl);
+            });
+        }
+        
+        const { subtotal, discount, finalTotal, appliedDeals } = calculateTotals();
+        let totalsHtml = `<div><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>`;
+        appliedDeals.forEach(deal => {
+            totalsHtml += `<div class="combo-deal"><span>${deal.name}</span><span>-₹${deal.amount.toFixed(2)}</span></div>`;
+        });
+        totalsHtml += `<div class="grand-total"><span>TOTAL</span><span>₹${finalTotal.toFixed(2)}</span></div>`;
+        totalsEl.innerHTML = totalsHtml;
+    }
+
+    function renderProducts() {
+        productGridEl.innerHTML = '';
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-card-main" data-id="${product.id}">
+                    <div class="emoji">${product.emoji}</div>
+                    <h5>${product.name}</h5>
+                    <p>${product.brand}</p>
+                </div>
+                <button class="gemini-btn" data-id="${product.id}" title="Generate AI Description">✨</button>
+            `;
+            card.querySelector('.product-card-main').addEventListener('click', () => AIAgent.Transaction.addItem(product.id));
+            card.querySelector('.gemini-btn').addEventListener('click', () => AIAgent.Gemini.generateProductDescription(product.id));
+            productGridEl.appendChild(card);
+        });
+    }
+
+    // --- INITIALIZATION ---
+    clearSaleBtn.addEventListener('click', AIAgent.Transaction.completeSale);
+    modalCloseBtn.addEventListener('click', () => modalOverlay.style.display = 'none');
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            modalOverlay.style.display = 'none';
+        }
+    });
+    renderProducts();
+    AIAgent.System.boot();
+});
+</script>
 </body>
 </html>
