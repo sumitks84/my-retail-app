@@ -3,621 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DukaanDostAI | AI-Powered POS for Indian Sports & Retail</title>
+    <title>DukaanDostAI POS - Bodh Gaya</title>
     <style>
         :root {
-            --primary-color: #4A90E2; /* A modern, trustworthy blue */
-            --secondary-color: #F5A623; /* A vibrant, energetic orange */
-            --dark-color: #333;
-            --light-color: #f8f9fa;
-            --text-color: #555;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --bg-main: #f4f7fa;
+            --bg-panel: #ffffff;
+            --primary: #2a61c9;
+            --secondary: #00b894;
+            --accent: #f5a623;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e4e7ed;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
             margin: 0;
-            padding: 0;
-            line-height: 1.7;
-            color: var(--text-color);
-            background-color: #fff;
-            scroll-behavior: smooth;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 20px;
+        /* --- Main Layout --- */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-        /* --- Navigation --- */
-        .navbar {
-            background: #ffffff;
-            color: var(--dark-color);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1rem 0;
-        }
-
-        .navbar .container {
+        .pos-header {
+            background-color: var(--bg-panel);
+            padding: 0 25px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .pos-main {
+            display: grid;
+            grid-template-columns: 1fr 420px 350px;
+            gap: 20px;
+            padding: 20px;
+            flex-grow: 1;
+            overflow: hidden;
         }
 
-        .navbar .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .navbar .logo span {
-            color: var(--secondary-color);
-        }
-
-        .nav-links {
-            list-style: none;
+        .transaction-panel, .product-panel, .ai-assistant-panel {
+            background-color: var(--bg-panel);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             display: flex;
-            margin: 0;
-            padding: 0;
+            flex-direction: column;
+            overflow: hidden;
         }
-
-        .nav-links li {
-            margin-left: 25px;
+        
+        /* --- Header --- */
+        .header-left .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
         }
+        .header-left .logo span { color: var(--accent); }
 
-        .nav-links a {
-            color: var(--dark-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .datetime, .cashier-info { font-size: 0.9rem; }
+        .cashier-info span { font-weight: 600; }
+        .ai-status { font-weight: 500; color: var(--secondary); }
+        .lang-toggle button { background: none; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+        .lang-toggle .active { background-color: var(--primary); color: white; border-color: var(--primary); }
+        
+        /* --- Transaction Panel (Left) --- */
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 1.1rem;
         }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
         }
-
-        /* --- Hero Section --- */
-        .hero {
-            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1935&auto=format&fit=crop') no-repeat center center/cover;
-            padding: 100px 0;
-            text-align: center;
+        .cart-item {
+            display: grid;
+            grid-template-columns: auto 1fr 80px 100px;
+            gap: 15px;
+            align-items: center;
+            padding: 15px 10px;
+            border-bottom: 1px solid #f0f0f0;
         }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            color: var(--dark-color);
+        .cart-item:last-child { border-bottom: none; }
+        .item-image { width: 50px; height: 50px; background-color: #f0f0f0; border-radius: 8px; }
+        .item-details h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+        .item-details p { margin: 2px 0 0; font-size: 0.85rem; color: var(--text-light); }
+        .item-details .ai-tip { font-size: 0.75rem; color: var(--primary); font-style: italic; }
+        .item-qty input { width: 40px; text-align: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 5px; }
+        .item-price { font-weight: 600; text-align: right; }
+        
+        .transaction-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .totals {
             margin-bottom: 20px;
         }
-
-        .hero p {
+        .totals div { display: flex; justify-content: space-between; padding: 5px 0; }
+        .totals .grand-total { font-size: 1.5rem; font-weight: 700; border-top: 2px solid var(--border-color); margin-top: 10px; padding-top: 10px; }
+        
+        .pay-button {
+            width: 100%;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 18px;
             font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 30px auto;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
-
-        .btn {
-            display: inline-block;
-            background: var(--secondary-color);
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #e0941e;
-            transform: translateY(-2px);
-        }
+        .pay-button:hover { background-color: #00a382; }
         
-        /* --- Section Styling --- */
-        section {
-            padding: 80px 0;
+        .voice-command {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
+        .voice-command:hover { background-color: #eef1f4; }
+        .voice-command span { font-weight: 500; color: var(--primary); }
 
-        section:nth-child(even) {
-            background-color: var(--light-color);
-        }
+        /* --- Product Panel (Middle) --- */
+        .customer-lookup { padding: 20px; border-bottom: 1px solid var(--border-color); }
+        .customer-lookup input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box;}
+        .customer-info { margin-top: 15px; background: #e9f0ff; padding: 15px; border-radius: 8px; font-size: 0.9rem;}
+        .customer-info strong { color: var(--primary); }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            color: var(--dark-color);
-            margin-bottom: 10px;
-        }
-
-        .section-header p {
-            font-size: 1.1rem;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        /* --- Card & Grid Layout --- */
-        .grid-3 {
+        .product-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            gap: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
         }
-        
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            align-items: center;
-        }
-
-        .card {
-            background: #fff;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            transition: transform 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-top: 0;
-        }
-
-        .card ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .card ul li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .card ul li::before {
-            content: '✓';
-            color: var(--secondary-color);
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-
-        /* --- Specific Section: Sports --- */
-        #sports-focus .icon {
-            font-size: 3rem;
-            color: var(--secondary-color);
+        .product-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             text-align: center;
-            display: block;
-            margin-bottom: 20px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+        .product-card:hover { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-color: var(--primary); }
+        .product-card .emoji { font-size: 2rem; }
+        .product-card h5 { margin: 5px 0 2px; font-size: 0.85rem; font-weight: 500; }
+        .product-card p { margin: 0; font-size: 0.8rem; color: var(--text-light); }
 
-        /* --- Specific Section: Lessons Learned --- */
-        #lessons-learned {
-            background: #f0f5fc;
-        }
-
-        /* --- Specific Section: App Features --- */
-        #app-features .feature-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        
-        #app-features h4 {
-            color: var(--dark-color);
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        /* --- Roadmap --- */
-        .roadmap-timeline {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .roadmap-timeline::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            background-color: var(--primary-color);
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -2px;
-        }
-        .timeline-container {
-            padding: 10px 40px;
-            position: relative;
-            background-color: inherit;
-            width: 50%;
-        }
-        .timeline-container.left { left: 0; }
-        .timeline-container.right { left: 50%; }
-        .timeline-container::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            right: -14px;
-            background-color: white;
-            border: 4px solid var(--secondary-color);
-            top: 15px;
-            border-radius: 50%;
-            z-index: 1;
-        }
-        .right::after { left: -12px; }
-        .timeline-content {
-            padding: 20px 30px;
-            background-color: white;
-            position: relative;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-        .timeline-content h4 {
-            color: var(--primary-color);
-        }
-        
-        /* --- Pricing Table --- */
-        .pricing-table {
+        /* --- AI Assistant Panel (Right) --- */
+        .ai-assistant-panel .panel-header {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
-        .pricing-plan {
-            flex: 1;
-            max-width: 350px;
-            min-width: 300px;
-            background: #fff;
-            padding: 40px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            box-shadow: var(--box-shadow);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
+        .ai-feed {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
         }
-        .pricing-plan.recommended {
-            border-color: var(--secondary-color);
-            transform: scale(1.05);
+        .ai-alert {
+            margin-bottom: 18px;
+            padding-left: 18px;
+            border-left: 3px solid;
         }
-        .pricing-plan h3 { font-size: 1.8rem; color: var(--dark-color); }
-        .pricing-plan .price { font-size: 3rem; font-weight: 700; color: var(--primary-color); margin: 10px 0; }
-        .pricing-plan .price span { font-size: 1rem; color: var(--text-color); }
-        .pricing-plan ul { list-style: none; padding: 0; margin: 30px 0; }
-        .pricing-plan ul li { margin-bottom: 15px; }
-
-        /* --- Footer --- */
-        .footer {
-            background: var(--dark-color);
-            color: #fff;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .footer p { margin: 0; }
-
-        /* --- Responsive --- */
-        @media (max-width: 992px) {
-            .grid-3, .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            .navbar .container {
-                flex-direction: column;
-            }
-            .nav-links {
-                margin-top: 15px;
-            }
-            .nav-links li { margin: 0 10px; }
-            .hero h1 { font-size: 2.8rem; }
-            .roadmap-timeline::after { left: 31px; }
-            .timeline-container { width: 100%; padding-left: 70px; padding-right: 25px; }
-            .timeline-container.left::after, .timeline-container.right::after { left: 18px; }
-            .timeline-container.right { left: 0%; }
-        }
+        .ai-alert.forecast { border-color: #3498db; }
+        .ai-alert.inventory { border-color: #e67e22; }
+        .ai-alert.staffing { border-color: #9b59b6; }
+        .ai-alert.insight { border-color: var(--accent); }
+        
+        .ai-alert h5 { margin: 0 0 5px; font-size: 0.9rem; }
+        .ai-alert p { margin: 0; font-size: 0.85rem; line-height: 1.5; }
+        .ai-alert a { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.8rem;}
 
     </style>
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="container">
-            <a href="#" class="logo">DukaanDost<span>AI</span></a>
-            <ul class="nav-links">
-                <li><a href="#pos-features">AI POS</a></li>
-                <li><a href="#app-features">DukaanDostAI App</a></li>
-                <li><a href="#roadmap">Roadmap</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#usp">Why Us</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <header class="hero" id="home">
-        <div class="container">
-            <h1>Revolutionizing Retail for the Modern Indian Shopkeeper</h1>
-            <p>
-                An intelligent POS system and customer app, learning from past failures to deliver seamless omnichannel capabilities, real-time inventory management, and predictive analytics. Built for India, built for you.
-            </p>
-            <a href="#pricing" class="btn">Get Started Today</a>
-        </div>
-    </header>
-
-    <main>
-        <section id="sports-focus">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Engineered for the Sports Enthusiast Retailer</h2>
-                    <p>Whether you run a cricket gear shop, a fitness apparel store, or a multi-sport emporium, DukaanDostAI is tuned to the unique rhythm of your business.</p>
-                </div>
-                <div class="grid-3">
-                    <div class="card">
-                        <span class="icon">🏏</span>
-                        <h3>Seasonal Demand</h3>
-                        <p>Our AI predicts demand for seasonal gear—from cricket season to marathon running—so you're always stocked for the win.</p>
-                    </div>
-                    <div class="card">
-                        <span class="icon">👟</span>
-                        <h3>Complex Inventory</h3>
-                        <p>Effortlessly manage complex inventory like shoe sizes, apparel colors, and team kits with our intelligent tracking system.</p>
-                    </div>
-                    <div class="card">
-                        <span class="icon">🏆</span>
-                        <h3>Community Engagement</h3>
-                        <p>Use the DukaanDostAI app to connect with local teams, sponsor events, and build a loyal community around your brand.</p>
-                    </div>
+    <div class="pos-container">
+        <header class="pos-header">
+            <div class="header-left">
+                <div class="logo">DukaanDost<span>AI</span></div>
+            </div>
+            <div class="header-right">
+                <div class="datetime">August 17, 2025, 8:26 PM</div>
+                <div class="cashier-info">Store: <strong>Bodh Gaya</strong> | Cashier: <strong>Rohan Kumar</strong></div>
+                <div class="ai-status">AI Assistant: 🟢 Online</div>
+                <div class="lang-toggle">
+                    <button class="active">EN</button><button>HI</button>
                 </div>
             </div>
-        </section>
+        </header>
 
-        <section id="lessons-learned">
-            <div class="container">
-                 <div class="section-header">
-                    <h2>Built on Lessons Learned, Engineered for Stability</h2>
-                    <p>We've studied the failures of complex IT projects like the Ça Va de Soi case. Our entire system is designed to prevent those pitfalls, ensuring a smooth, reliable transition for your business.</p>
-                </div>
-                <div class="grid-3">
-                    <div class="card">
-                        <h3><span style="color: var(--secondary-color);">1.</span> Data Integrity & Migration</h3>
-                        <p>Our AI automatically cleans, validates, and maps your existing data. With real-time checks and instant rollback capabilities, your data is always safe and accurate.</p>
-                    </div>
-                     <div class="card">
-                        <h3><span style="color: var(--secondary-color);">2.</span> Seamless System Integration</h3>
-                        <p>A universal API gateway and plug-and-play architecture mean we connect to any e-commerce platform, not just one. Real-time monitoring alerts us to issues before they affect you.</p>
-                    </div>
-                     <div class="card">
-                        <h3><span style="color: var(--secondary-color);">3.</span> Supportive Change Management</h3>
-                        <p>We support your team with interactive training, contextual help within the app, and a gradual feature rollout. We ensure your staff are confident and proficient from day one.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="pos-features">
-            <div class="container">
-                <div class="section-header">
-                    <h2>The Smartest Counter In Your Shop</h2>
-                    <p>Our AI-Powered Retail POS Agent goes beyond transactions to become the brain of your retail operation.</p>
-                </div>
-                <div class="grid-3">
-                    <div class="card">
-                        <h3>Core POS, Reimagined</h3>
-                        <ul>
-                            <li><strong>Voice-Enabled Checkout:</strong> Hands-free operation with NLP.</li>
-                            <li><strong>Multi-Language Support:</strong> Hindi, English, & regional languages.</li>
-                            <li><strong>Smart Payment Recognition:</strong> Auto-detects UPI, cards, cash.</li>
-                            <li><strong>Dynamic Pricing Engine:</strong> Adjusts prices based on demand.</li>
-                            <li><strong>AI Fraud Detection:</strong> Flags suspicious transactions.</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h3>Intelligent Inventory</h3>
-                        <ul>
-                            <li><strong>Predictive Stock Alerts:</strong> Forecasts when items will run out.</li>
-                            <li><strong>Automatic Reordering:</strong> Suggests purchase orders.</li>
-                            <li><strong>Multi-Location Sync:</strong> Real-time view across all stores.</li>
-                            <li><strong>Dead Stock Identification:</strong> Flags slow-moving items.</li>
-                            <li><strong>Seasonal Trend Analysis:</strong> Prepares you for festivals.</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h3>Advanced Business AI</h3>
-                        <ul>
-                            <li><strong>Sales & Churn Forecasting:</strong> Predict sales and customer loss.</li>
-                            <li><strong>Market Basket Analysis:</strong> Discover what products sell together.</li>
-                            <li><strong>AI Staff Scheduling:</strong> Optimize shifts based on footfall.</li>
-                            <li><strong>Supplier Scoring:</strong> Automatically rate your suppliers.</li>
-                            <li><strong>AI-Powered Marketing:</strong> Automate personalized campaigns.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="app-features">
-            <div class="container">
-                <div class="section-header">
-                    <h2>More Than an App, A Community</h2>
-                    <p>Introducing <strong>DukaanDostAI</strong> (Shop Friend AI) — a gamified, social commerce platform that makes shopping fun while connecting you with your customers like never before.</p>
-                </div>
-                
-                <h3 style="text-align:center; font-size: 2rem; margin-bottom: 40px;">Unique Features for the Indian Market</h3>
-
-                <div class="grid-2">
-                    <div class="card">
-                        <h4 style="text-align: center;">For Your Customers</h4>
-                        <div style="text-align:center;" class="feature-icon">🛍️</div>
-                        <ul>
-                            <li><strong>"Bargain Battle":</strong> Gamified virtual haggling with AI, with leaderboards and festival events.</li>
-                            <li><strong>"Family Shopping Circle":</strong> Shared lists, group payments, and "Mom's Approval" feature for joint decisions.</li>
-                            <li><strong>"Live Shop Tours":</strong> Host live video tours of your store with AR virtual try-on.</li>
-                            <li><strong>"Festival Planner":</strong> AI-suggested shopping lists and budget management for Diwali, Holi, and more.</li>
-                            <li><strong>"Hyperlocal Discovery":</strong> Helps users find local shops and participate in "Shop Hop" challenges.</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h4 style="text-align: center;">For You, The Retailer</h4>
-                        <div style="text-align:center;" class="feature-icon">📈</div>
-                         <ul>
-                            <li><strong>"Digital Dukaan Assistant":</strong> Voice-enabled inventory updates and photo-based product listing in your local language.</li>
-                            <li><strong>Customer Insights Dashboard:</strong> Predict foot traffic, see preference heat maps, and get stocking suggestions.</li>
-                             <li><strong>Flash Sale Creator:</strong> One-click flash sales for slow-moving stock with location-based notifications.</li>
-                             <li><strong>GST-Compliant Billing:</strong> Hassle-free, automated GST billing and reporting.</li>
-                             <li><strong>Social Sharing Incentives:</strong> Reward customers for sharing their purchases on social media.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="section-header" style="margin-top: 80px;">
-                    <h3>Gamification & Social Engagement</h3>
-                </div>
-                 <div class="grid-3">
-                     <div class="card">
-                        <h4>"Shopping Karma" Points</h4>
-                        <p>Customers earn points for purchases, reviews, and referrals, redeemable for discounts. Points can even be transferred to family members!</p>
-                    </div>
-                    <div class="card">
-                        <h4>"Retail Champions" League</h4>
-                        <p>Monthly shopping challenges, store loyalty streaks, and social achievements create friendly competition and drive repeat business.</p>
-                    </div>
-                    <div class="card">
-                        <h4>"Shop & Share"</h4>
-                        <p>An Instagram-style feed where customers can post their purchases, participate in "outfit of the day" challenges, and become local influencers for your store.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="roadmap">
-            <div class="container">
-                 <div class="section-header">
-                    <h2>Our Implementation Roadmap</h2>
-                    <p>A phased, responsible rollout ensuring stability and success at every step.</p>
-                </div>
-                <div class="roadmap-timeline">
-                    <div class="timeline-container left">
-                        <div class="timeline-content">
-                            <h4>Phase 1 (Months 1-3): MVP Launch</h4>
-                            <p>Core POS functionality, basic inventory management, customer database, and payment integration.</p>
+        <main class="pos-main">
+            <section class="transaction-panel">
+                <div class="panel-header">Current Sale</div>
+                <div class="cart-items">
+                    <div class="cart-item">
+                        <img src="https://via.placeholder.com/50x50.png?text=CRICKET+BAT" alt="Cricket Bat" class="item-image">
+                        <div class="item-details">
+                            <h4>SG Kashmir Willow Bat</h4>
+                            <p>Size 5, Short Handle</p>
+                            <p class="ai-tip">💡 Pairs well with Batting Gloves</p>
                         </div>
+                        <div class="item-qty"><input type="number" value="1"></div>
+                        <div class="item-price">₹1,850.00</div>
                     </div>
-                    <div class="timeline-container right">
-                        <div class="timeline-content">
-                             <h4>Phase 2 (Months 4-6): AI Integration</h4>
-                            <p>Launch of the recommendation engine, predictive analytics, voice assistance, and automated reporting.</p>
+                    <div class="cart-item">
+                        <img src="https://via.placeholder.com/50x50.png?text=TENNIS+BALL" alt="Tennis Ball" class="item-image">
+                        <div class="item-details">
+                            <h4>Cosco Tennis Ball (Pack of 3)</h4>
+                            <p>Heavy Duty, Green</p>
+                            <p class="ai-tip"></p>
                         </div>
+                        <div class="item-qty"><input type="number" value="2"></div>
+                        <div class="item-price">₹320.00</div>
                     </div>
-                    <div class="timeline-container left">
-                        <div class="timeline-content">
-                            <h4>Phase 3 (Months 7-9): Social Features</h4>
-                            <p>Launch of the DukaanDostAI customer app with gamification, social shopping, and community building features.</p>
+                     <div class="cart-item">
+                        <img src="https://via.placeholder.com/50x50.png?text=JERSEY" alt="Jersey" class="item-image">
+                        <div class="item-details">
+                            <h4>Indian Cricket Team Jersey</h4>
+                            <p>Size L, Dri-Fit Material</p>
+                            <p class="ai-tip">🔥 Fast moving item this week!</p>
                         </div>
-                    </div>
-                     <div class="timeline-container right">
-                        <div class="timeline-content">
-                             <h4>Phase 4 (Months 10-12): Scale & Optimize</h4>
-                            <p>Expansion to multiple cities, rollout of advanced AI features, partner integrations, and performance optimization.</p>
-                        </div>
+                        <div class="item-qty"><input type="number" value="1"></div>
+                        <div class="item-price">₹1,999.00</div>
                     </div>
                 </div>
-            </div>
-        </section>
+                <div class="voice-command">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
+                     <span>Tap or say "Hey Dost, add item..." (Hindi/English supported)</span>
+                </div>
+                <div class="transaction-footer">
+                    <div class="totals">
+                        <div><span>Subtotal</span><span>₹4,169.00</span></div>
+                        <div><span>Discount (Bargain Battle)</span><span>-₹169.00</span></div>
+                        <div><span>GST (18%)</span><span>₹720.00</span></div>
+                        <div class="grand-total"><span>TOTAL</span><span>₹4,720.00</span></div>
+                    </div>
+                    <button class="pay-button">PAY NOW</button>
+                </div>
+            </section>
 
-        <section id="pricing">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Affordable Pricing for Every Dukaan</h2>
-                    <p>Simple, transparent plans designed to grow with your business. No hidden fees.</p>
-                </div>
-                <div class="pricing-table">
-                    <div class="pricing-plan">
-                        <h3>Starter</h3>
-                        <div class="price">₹500<span>/month</span></div>
-                        <p>For small shops and new businesses.</p>
-                        <ul>
-                            <li>Core POS Functions</li>
-                            <li>Basic Inventory Management</li>
-                            <li>GST-Compliant Billing</li>
-                            <li>Customer Database</li>
-                        </ul>
-                        <a href="#" class="btn">Choose Plan</a>
-                    </div>
-                    <div class="pricing-plan recommended">
-                        <h3>Growth</h3>
-                        <div class="price">₹1200<span>/month</span></div>
-                        <p>For growing businesses ready to leverage AI.</p>
-                        <ul>
-                            <li>Everything in Starter, plus:</li>
-                            <li><strong>All AI POS Features</strong></li>
-                            <li><strong>DukaanDostAI App Integration</strong></li>
-                            <li>Predictive Analytics</li>
-                            <li>Automated Reordering</li>
-                        </ul>
-                        <a href="#" class="btn">Choose Plan</a>
-                    </div>
-                    <div class="pricing-plan">
-                        <h3>Pro</h3>
-                        <div class="price">₹2000<span>/month</span></div>
-                        <p>For multi-location stores and enterprises.</p>
-                         <ul>
-                            <li>Everything in Growth, plus:</li>
-                            <li>Multi-Location Sync</li>
-                            <li>Advanced Business Intelligence</li>
-                            <li>API Access for Integrations</li>
-                            <li>Dedicated Support</li>
-                        </ul>
-                        <a href="#" class="btn">Choose Plan</a>
+            <section class="product-panel">
+                 <div class="customer-lookup">
+                    <input type="text" placeholder="Search Customer by Name or Phone...">
+                    <div class="customer-info">
+                        <strong>Customer:</strong> Priya Singh (98XXXXXX01)<br>
+                        ⭐ <strong>High-Value Customer</strong>. Last visit: 2 weeks ago. Usually buys running shoes.
                     </div>
                 </div>
-            </div>
-        </section>
+                <div class="panel-header">Quick Add Products</div>
+                <div class="product-grid">
+                    <div class="product-card"><span class="emoji">🏏</span><h5>Cricket Bat</h5><p>₹1,850</p></div>
+                    <div class="product-card"><span class="emoji">🥎</span><h5>Tennis Ball</h5><p>₹160</p></div>
+                    <div class="product-card"><span class="emoji">👕</span><h5>Team Jersey</h5><p>₹1,999</p></div>
+                    <div class="product-card"><span class="emoji">🧤</span><h5>Batting Gloves</h5><p>₹950</p></div>
+                    <div class="product-card"><span class="emoji">⛑️</span><h5>Cricket Helmet</h5><p>₹2,200</p></div>
+                    <div class="product-card"><span class="emoji">👟</span><h5>Running Shoes</h5><p>₹3,500</p></div>
+                    <div class="product-card"><span class="emoji">🏸</span><h5>Badminton Racket</h5><p>₹1,500</p></div>
+                    <div class="product-card"><span class="emoji">💧</span><h5>Water Bottle</h5><p>₹450</p></div>
+                    <div class="product-card"><span class="emoji">🧢</span><h5>Sports Cap</h5><p>₹600</p></div>
+                </div>
+            </section>
 
-        <section id="usp">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Our Unique Advantage</h2>
+            <aside class="ai-assistant-panel">
+                 <div class="panel-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><polyline points="16 12 12 12 12 16"></polyline><path d="M12 2a10 10 0 0 0-9.44 12.66l.23.63-.63-.23A10 10 0 0 0 12 22a10 10 0 0 0 10-10c0-5.52-4.48-10-10-10z"></path></svg>
+                    DukaanDostAI Assistant
                 </div>
-                <div class="grid-2">
-                    <div class="card">
-                        <h3>For Indian Retailers</h3>
-                        <ul>
-                            <li><strong>Affordable Pricing:</strong> Plans starting from just ₹500/month.</li>
-                            <li><strong>Multi-language Support:</strong> Works in English, Hindi, and major regional languages.</li>
-                            <li><strong>GST Compliant:</strong> Automates your tax compliance seamlessly.</li>
-                            <li><strong>Works on Basic Smartphones:</strong> No need for expensive hardware.</li>
-                            <li><strong>Minimal Training Required:</strong> Intuitive design for you and your staff.</li>
-                        </ul>
+                <div class="ai-feed">
+                    <div class="ai-alert forecast">
+                        <h5>📈 Sales Forecast</h5>
+                        <p>Tonight's sales are trending <strong>15% above</strong> prediction. Expect a busy closing hour.</p>
                     </div>
-                    <div class="card">
-                        <h3>For Indian Customers</h3>
-                        <ul>
-                            <li><strong>Culturally Relevant Features:</strong> Like "Bargain Battle" and "Family Circle".</li>
-                            <li><strong>Family-Oriented Shopping:</strong> Tools that understand the Indian family unit.</li>
-                            <li><strong>Festival-Specific Offerings:</strong> AI planners for all major Indian festivals.</li>
-                            <li><strong>Vernacular Language Support:</strong> An app that speaks their language.</li>
-                            <li><strong>Offline-Online Bridge:</strong> Connects them with their favorite local stores.</li>
-                        </ul>
+                    <div class="ai-alert inventory">
+                        <h5>📦 Predictive Stock Alert</h5>
+                        <p>Low stock on <strong>'SG Club' Cricket Balls</strong> (3 units left). Sales velocity is high.</p>
+                        <a href="#">View & Approve Reorder →</a>
+                    </div>
+                     <div class="ai-alert insight">
+                        <h5>💡 Market Basket Insight</h5>
+                        <p>Customers buying the <strong>Indian Cricket Jersey</strong> also buy <strong>Sports Caps</strong> 65% of the time. Suggest a combo offer?</p>
+                        <a href="#">Create Combo →</a>
+                    </div>
+                    <div class="ai-alert staffing">
+                        <h5>🚶 Footfall Prediction</h5>
+                        <p>Peak footfall expected tomorrow at <strong>6 PM</strong> due to a local tournament announcement.</p>
+                        <a href="#">Adjust Staff Schedule →</a>
+                    </div>
+                    <div class="ai-alert inventory">
+                        <h5>📉 Dead Stock Identified</h5>
+                        <p><strong>'XYZ Brand' Football Studs</strong> haven't sold in 90 days. Consider a flash sale.</p>
+                        <a href="#">Create Flash Sale →</a>
                     </div>
                 </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 DukaanDostAI. All Rights Reserved. Revolutionizing Indian Retail.</p>
-            <p>Built with care in India.</p>
-        </div>
-    </footer>
-
+            </aside>
+        </main>
+    </div>
 </body>
 </html>
